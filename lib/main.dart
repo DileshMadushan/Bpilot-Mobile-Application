@@ -1,6 +1,7 @@
 // ignore_for_file: unused_field, unused_import
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'pilot_signup.dart';
+
 
 import 'passenger_signup.dart';
 import 'pilot_signup.dart';
@@ -9,6 +10,7 @@ import 'signup.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -33,7 +35,7 @@ class MyApp extends StatelessWidget {
         '/person_login': (context) => const PersonLoginScreen(),
         '/pilot_login': (context) => const PilotLoginScreen(),
       },
-    ); // MaterialApp
+    ); 
   }
 }
 
@@ -51,29 +53,29 @@ class RegistrationScreen extends StatelessWidget {
               color: Colors.black,
               fontSize: 44,
               fontWeight: FontWeight.bold,
-            ), //TextStyle
+            ),
             children: [
               TextSpan(
                 text: 'Pilot',
                 style: TextStyle(
                   color: Color.fromARGB(255, 232, 229, 228),
                   fontWeight: FontWeight.bold,
-                ),//TextStyle
-              ), //TextSpan
+                ),
+              ), 
               TextSpan(
                 text: '\nBus Pilot Operator',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 19,
-                ), //TextStyle
-              ), //TextSpan
+                ),
+              ), 
             ],
-          ), //TextSpan
-        ), //RichText
+          ), 
+        ), 
         backgroundColor: const Color.fromARGB(255, 247, 224, 26),
         centerTitle: true,
         toolbarHeight: 150,
-      ), //AppBar
+      ), 
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -319,3 +321,285 @@ class _PersonLoginScreenState extends State<PersonLoginScreen> {
         }
       },
     );
+
+     var loginButton = ElevatedButton(
+      onPressed: () {
+        if (_formKey.currentState?.validate() ?? false) {
+          _formKey.currentState?.save();
+          // Perform login with _nic and _password
+          // Add your login logic here
+        }
+      },
+      style: ElevatedButton.styleFrom(
+        shape: RoundedRectangleBorder(
+          borderRadius:
+              BorderRadius.circular(10), // Adjust the border radius here
+          side: const BorderSide(color: Colors.black), // Add black border color
+        ),
+        backgroundColor: Colors.white,
+        padding:
+            const EdgeInsets.symmetric(vertical: 15), // Button background color
+      ),
+      child: const Text(
+        'Login',
+        style: TextStyle(fontSize: 16, color: Colors.black),
+      ),
+    );
+
+    return Scaffold(
+      appBar: AppBar(
+        title: RichText(
+          text: const TextSpan(
+            text: 'B.',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 44,
+              fontWeight: FontWeight.bold,
+            ),
+            children: [
+              TextSpan(
+                text: 'Pilot',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 232, 229, 228),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              TextSpan(
+                text: '\nBus Pilot Operator',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 19,
+                ),
+              ),
+            ],
+          ),
+        ),
+        backgroundColor: const Color.fromARGB(255, 247, 224, 26),
+        centerTitle: true,
+        toolbarHeight: 150,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Row(
+                children: [
+                  Text(
+                    'Login as a passenger ',
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  ),
+                  Icon(Icons.person, color: Colors.black, weight: 50, size: 40),
+                ],
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: nicField,
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: passwordField,
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: SizedBox(
+                  width: 140,
+                  child: loginButton,
+                ),
+              ),
+              const SizedBox(
+                  height:
+                      20), // Add some space between the login button and sign-up option
+              signUpPassangerOption(), // Display the sign-up option
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class PilotLoginScreen extends StatefulWidget {
+  const PilotLoginScreen({super.key});
+  @override
+  // ignore: library_private_types_in_public_api
+  _PilotLoginScreenState createState() => _PilotLoginScreenState();
+}
+
+class _PilotLoginScreenState extends State<PilotLoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+
+  Row signUpPilotOption() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Text(
+          "Don't have an account?",
+          style: TextStyle(color: Colors.black),
+        ),
+        GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const PilotSignUpScreen()));
+          },
+          child: const Text(
+            " Sign Up",
+            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+          ),
+        )
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var busRegNumberField = TextFormField(
+      decoration: const InputDecoration(
+        labelText: 'Email',
+        border: OutlineInputBorder(),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Email';
+        }
+        return null;
+      },
+      onSaved: (value) {
+        // Use the value if needed
+      },
+    );
+
+    var passwordField = TextFormField(
+      obscureText: true,
+      decoration: const InputDecoration(
+        labelText: 'Password',
+        border: OutlineInputBorder(),
+      ),
+      validator: (value) {
+        if (value == null || value.length < 8) {
+          return 'Password should be at least 8 characters!';
+        }
+        return null;
+      },
+      onSaved: (value) {
+        if (value != null) {}
+      },
+    );
+
+    var loginButton = SizedBox(
+      width: 50,
+      child: ElevatedButton(
+        onPressed: () {
+          if (_formKey.currentState?.validate() ?? false) {
+            _formKey.currentState?.save();
+            // Perform login with _busRegistrationNumber and _password
+            // Add your login logic here
+          }
+        },
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(10), // Adjust the border radius here
+            side:
+                const BorderSide(color: Colors.black), // Add black border color
+          ),
+          backgroundColor: Colors.white,
+          padding: const EdgeInsets.symmetric(
+            vertical: 15,
+            horizontal: 2,
+          ), // Button background color
+        ),
+        child: const Text(
+          'Login',
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+      ),
+    );
+
+    return Scaffold(
+      appBar: AppBar(
+        title: RichText(
+          text: const TextSpan(
+            text: 'B.',
+            style: TextStyle(
+              color: Colors.black,
+              fontSize: 44,
+              fontWeight: FontWeight.bold,
+            ),
+            children: [
+              TextSpan(
+                text: 'Pilot',
+                style: TextStyle(
+                  color: Color.fromARGB(255, 232, 229, 228),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              TextSpan(
+                text: '\nBus Pilot Operator',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontSize: 19,
+                ),
+              ),
+            ],
+          ),
+        ),
+        backgroundColor: const Color.fromARGB(255, 247, 224, 26),
+        centerTitle: true,
+        toolbarHeight: 150,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Row(
+                children: [
+                  Text(
+                    'Login as a rider ',
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  ),
+                  Icon(
+                    Icons.directions_bus,
+                    color: Colors.black,
+                    weight: 50,
+                    size: 50,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: busRegNumberField,
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: passwordField,
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: SizedBox(
+                  width: 140,
+                  child: loginButton,
+                ),
+              ),
+              const SizedBox(
+                  height:
+                      20), // Add some space between the login button and sign-up option
+              signUpPilotOption(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
